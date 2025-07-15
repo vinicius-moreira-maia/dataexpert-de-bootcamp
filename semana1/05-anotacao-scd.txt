@@ -1,0 +1,17 @@
+O script para carregar a dimensão que possui SCD usou a tabela acumulativa que foi criada (players).
+
+Em nenhum momento foi utilizada a coluna com o array de structs, ele olhou apenas para as flags 'is_active' (que deveria ter sido criada durante a aula) e 'scoring_class' (o enum que foi criado). O SCD é feito com base em mudanças nessas 2 colunas apenas.
+
+- Full Load
+    A query que foi mostrada é um ótimo padrão de carga para SCD, mas ela carrega todo o histórico até certo ponto. Então os mesmos dados serão carregados várias vezes.
+
+    Podem ocorrer problemas de falta de memória, as vezes.
+
+    Mas dados dimensionais não mudam tanto assim, quando mudam são "Slowly Changing", então dá pra tomar essas liberdades e não se preocupar tanto em estourar memória. Dados de tabelas fato sim, mudam e aumentam MUITO.
+
+-- Load Incremental
+    É preciso garantir que os atributos observados na SCD não sejam NULL, ou o script vai quebrar.
+
+    Query mais eficiente que a anterior, pois essa compara apenas a última partição da dimensão com os dados novos.
+
+    Lembrar que se depende dos dados do passado a consulta será feita de forma sequencial.
