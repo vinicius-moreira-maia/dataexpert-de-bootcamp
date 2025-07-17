@@ -2,14 +2,14 @@
 INCREMENTAL LOAD !!
 
 De forma geral:
-    - Essa conulta pega apenas a partição mais recente dos dados dos dados históricos, que já estão na dimensão.
+    - Essa consulta pega apenas a partição mais recente dos dados históricos, que já estão na dimensão.
     - Os dados novos são comparados apenas com a última partição dos dados históricos.
     - Há 3 possibilidades nesse caso: ou o dado foi alterado ou o dado é novo ou não foi alterado.
 */
 
 with last_season_scd as ( -- dado de "ontem"
     select * from players_scd
-    where current_season = 2021
+    where current_season = 2021 -- 2021 representa a última partição, e é com ela que se deve trabalhar
     and end_season = 2021
 ),
 historical_scd as ( -- dado histórico
@@ -49,7 +49,6 @@ changed_records as (
             )::scd_type,
             row(
                 -- esse é o novo registro
-                -- engloba tanto quem mudou quanto quem não estava na temporada passada
                 ts.scoring_class,
                 ts.is_active,
                 ts.current_season,
