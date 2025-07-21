@@ -93,7 +93,7 @@ with ontem as (
     coalesce(h.draft_round, o.draft_round) as draft_round,
     coalesce(h.draft_number, o.draft_number) as draft_number,
     
-    -- isso é para ir incluindo ps valores do array
+    -- isso é para ir incluindo os valores do array
     -- row() gera uma tupla, e estou a convertendo para o tipo criado (season_stats)
     case when o.seasons is null -- Se ontem não houver registro, criar o array inicial com 1 valor.
         THEN array[row(
