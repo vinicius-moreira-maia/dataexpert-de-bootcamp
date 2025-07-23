@@ -12,20 +12,23 @@ having count(1) > 1
 
 /*
 1- Criar um filtro para eliminar duplicatas.
-2- Tudo que eu posso fazer join de forma barata não deve ir para fato. (no caso, as colunas relacionadas aos times, pois não há muitos times na NBA)
+2- Tudo que eu posso fazer join de forma barata não deve ir para a tabela fato. (no caso, as colunas relacionadas aos times, pois não há muitos times na NBA)
 
 -> Tudo que for fácil de derivar não deve ir para a fato (é desperdício).
 -> Atributos descritivos PODEM estar em tabela fato sim! =)
--> What (o que) e When (quando) são atributos inerentes ao fato
+-> What (o que) e When (quando) são atributos inerentes ao fato.
 -> Who, Where e How estão mais no campo das chaves para outras tabelas
 */
+
 insert into fact_game_details
 with deduped as (
     select 
         g.game_date_est, -- data do jogo
         g.season,
         g.home_team_id,
-        gd.*, 
+        gd.*,
+         
+        -- A função row_number() com partition by cria uma numeração sequencial dentro de grupos definidos pelas colunas gd.game_id, gd.team_id e gd.player_id, ordenando os registros de cada grupo por g.game_date_est, sem alterar a granularidade da tabela original.
         row_number() over(partition by gd.game_id, gd.team_id, gd.player_id order by g.game_date_est) as row_num
     
     -- o join com 'games' é para trazer o 'when' (quando)
