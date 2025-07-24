@@ -1,4 +1,11 @@
 -- full load
+/*
+	Apenas o insert into NÃO é uma operação idempotente.
+	Ao invés dele, SEMPRE usar merge, insert overwrite, deletar ou truncar antes fazer insert into ou, ainda,
+	fazer insert into on conflict update (upsert).
+*/
+
+-- essa operação está com erro de PK ... e usa insert into
 
 insert into actors_history_scd
 with estado_anterior as (

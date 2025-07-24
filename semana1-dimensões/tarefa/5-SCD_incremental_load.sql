@@ -8,7 +8,7 @@ create type scd_type2 as (
     end_year integer
 )
 
--- ainda há problemas de PK nesse insert...
+-- ainda há problemas de PK nesse insert ... e insert into NÃO faz da operação idempotente
 
 -- insert into actors_history_scd
 with ano_atual as (

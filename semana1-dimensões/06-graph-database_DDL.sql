@@ -1,6 +1,6 @@
 /*
 Modelagem de Dados em Grafos.
--> Modelagem agnóstica! Apeas o conteúdo dos enums
+-> Modelagem agnóstica! Apenas o conteúdo dos enums
    são mais específicos.
 */
 
