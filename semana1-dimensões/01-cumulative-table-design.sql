@@ -113,7 +113,7 @@ with ontem as (
            )::season_stats]
 
     -- Se ontem não for null mas hoje for, replicar o histórico.
-    -- Isso evitar adicionar nulls ao array.
+    -- Isso evita adicionar nulls ao array.
     else o.seasons
     end as season_stats,
 

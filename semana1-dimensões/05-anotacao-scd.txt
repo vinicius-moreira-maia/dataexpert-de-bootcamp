@@ -9,7 +9,7 @@ Em nenhum momento foi utilizada a coluna com o array de structs, ele olhou apena
 
     Mas dados dimensionais não mudam tanto assim, quando mudam são "Slowly Changing", então dá pra tomar essas liberdades e não se preocupar tanto em estourar memória. Dados de tabelas fato sim, mudam e aumentam MUITO.
 
--- Load Incremental
+- Load Incremental
     É preciso garantir que os atributos observados na SCD não sejam NULL, ou o script vai quebrar.
 
     Query mais eficiente que a anterior, pois essa compara apenas a última partição da dimensão com os dados novos.

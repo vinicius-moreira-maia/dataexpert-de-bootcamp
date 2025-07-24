@@ -1,20 +1,21 @@
 -- conhecendo o range da coluna que será usada para os "dados de hoje X dados de ontem"
-select min(year) from actor_films; -- 1970
-select max(year) from actor_films; -- 2021
+select min(year), max(year) from actor_films; -- 1970 e 2021
 
 -- consulta semente (seed query) -> 1969 e 1970
 
 -- 1 -> full outer join de "ontem" com "hoje"
 -- 2 -> coalesce de id's e atributos que não mudam
--- 3 -> combinação dos dos dados temporais de ontem com os de hoje (case statement com os arrays)
+-- 3 -> combinação dos dados temporais de ontem com os de hoje (case statement com os arrays)
+
+select min(year), max(year) from actor_films; -- 1970 e 2021
 
 insert into actors
 with ontem as (
     select * from actors
-    where current_year = 1974
+    where current_year = 1973
 ), hoje as (
     select * from actor_films
-    where year = 1975
+    where year = 1974
 ), ator_filme as (
 	select
     	-- se os valores de hoje não forem nulos, retorne-os, senão retorne os de ontem
@@ -50,6 +51,14 @@ with ontem as (
 
 	from hoje h full outer join ontem o 
      	on o.actor_name = h.actor
+), ator_filme_flat as (
+  -- essa cte é necessária para que o array_agg da próxima cte mantenha o array resultante como unidimensional 	
+  select
+    actor_id,
+    actor_name,
+    unnest(films) as film,
+    current_year
+  from ator_filme
 ), ator_filme_agg as (
 	-- Essa cte serve para agregar os dados dos atores em um mesmo ano (pois ele pode ter atuado em mais de um filme por ano). 
 	-- Também serve para calcular a média de 'rating', aproveitando o agrupamento já criado.
@@ -57,23 +66,17 @@ with ontem as (
 	 select
         actor_id,
         actor_name,
-        
-		/*
-			'array_agg()' estava agregando arrays, e não concatenando, ou seja, estava criando arrays de arrays. Isso estava causando erro na inserção.
-			Já 'array_cat(array_agg(films), '{}')' achata o array multidimensional em um unidimensional.	
-		*/
-		-- array_agg(films) as films,
-		array_cat(array_agg(films), '{}') as films,
-        
-		
-		avg((films[cardinality(films)]::film_stats).rating) as avg_rating,
 		current_year,
+		array_agg(film) as films,
+
+		-- film é a coluna da cte anterior que contém os structs de cada filme (um em cada linha)
+		avg((film).rating) as avg_rating,
 		case 
-			when max((films[cardinality(films)]::film_stats).film_year) = current_year
-				then true
-			else false
+  			when max((film).film_year) = current_year then true
+  			else false
 		end as is_active
-    from ator_filme
+		
+    from ator_filme_flat
     group by actor_id, actor_name, current_year
 ), ator_filme_quality_class as (
 	-- cte para criar a coluna que classifica os atores segundo a média de suas notas de atuação
