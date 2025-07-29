@@ -23,3 +23,13 @@ Tópicos estudados:
 **8.** Bancos de dados em grafos
 
 ### Módulo 2 - Modelagem de Dados (Fatos)
+
+Tópicos estudados:
+
+**1.** Modelagem de tabelas fato
+
+**2.** Remoção de duplicatas na carga de tabelas fato
+
+**3.** Dimensões e Métricas em tabelas fato
+
+**4.** Desenvolvimento da Estrutura de Dados 'Datelist' a partir de uma tabela acumulativa
