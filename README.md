@@ -33,3 +33,7 @@ Tópicos estudados:
 **3.** Dimensões e Métricas em tabelas fato
 
 **4.** Desenvolvimento da Estrutura de Dados 'Datelist' a partir de uma tabela acumulativa
+
+**5.** Estratégias para redução de tabelas fato com agregações diárias/mensais/anuais.
+
+**6.** Redução de shuffle em sistemas distribuídos.
