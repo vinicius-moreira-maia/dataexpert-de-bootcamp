@@ -37,3 +37,13 @@ Tópicos estudados:
 **5.** Estratégias para redução de tabelas fato com agregações diárias/mensais/anuais.
 
 **6.** Redução de shuffle em sistemas distribuídos.
+
+### Módulo 2 - Fundamentos do Apache Spark com PySpark
+
+Tópicos estudados:
+
+**1.** Ordenação global X Ordenação nas partições
+
+**2.** Impacto da ordenação de dados no tamanho dos arquivos parquet
+
+**3.** Uso de .explain() para analisar planos de execução

@@ -1,0 +1,46 @@
+✅ Diagnóstico resumido
+❌ Erro que você está vendo:
+
+Location does not exist: s3://warehouse/bootcamp/events/metadata/00000-xxxxxxxx.metadata.json
+Isso significa que o REST Catalog registrou a tabela bootcamp.events, mas os arquivos (metadados Iceberg) que deveriam estar no bucket warehouse do MinIO não existem (foram apagados ou nunca foram criados).
+
+✅ Solução segura
+🧹 1. Apague o bucket warehouse (já está no seu container mc)
+Esse trecho do seu mc já faz isso ao subir:
+
+/usr/bin/mc rm -r --force minio/warehouse;
+Isso apaga os dados do bucket, mas não apaga as tabelas do catálogo REST — ou seja, o catálogo ainda acredita que a tabela bootcamp.events existe, mesmo sem metadados.
+
+💥 2. Então, reiniciar os containers não resolve o problema
+Você precisa apagar a entrada da tabela no catálogo REST.
+
+✅ Como resolver corretamente
+🔧 Opção A — apagar a tabela com DROP TABLE (se ainda funcionar)
+Tente executar no Spark:
+
+DROP TABLE IF EXISTS bootcamp.events;
+Se funcionar, ótimo — você poderá criar de novo depois.
+
+Se der erro novamente, vá para a opção B.
+
+🧨 Opção B — apagar a entrada diretamente no REST Catalog (via API)
+O tabulario/iceberg-rest implementa o Iceberg REST Catalog API, então você pode deletar a tabela diretamente via curl, assim:
+
+curl -X DELETE http://localhost:8181/v1/namespaces/bootcamp/tables/matches_bucketed
+Use esse comando no host, ou http://iceberg-rest:8181/... se for de dentro de um container.
+
+✅ Depois de limpar tudo...
+Você pode recriar sua tabela normalmente:
+
+CREATE TABLE IF NOT EXISTS bootcamp.events (
+    url STRING,
+    referrer STRING,
+    browser_family STRING,
+    os_family STRING,
+    device_family STRING,
+    host STRING,
+    event_time TIMESTAMP,
+    event_date DATE
+)
+USING iceberg
+PARTITIONED BY (years(event_date));
